@@ -19,7 +19,7 @@ async function debug(options) {
 		if (vitePort) {
 			options.port = vitePort
 		}
-		const wpsjsConfig = jsUtil.wpsjsConfig()
+		const wpsjsConfig = await jsUtil.wpsjsConfig()
 		if (wpsjsConfig.port) {
 			options.port = wpsjsConfig.port
 		}

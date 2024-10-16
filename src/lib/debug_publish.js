@@ -137,7 +137,7 @@ function startNormalServer(serverPort){
 }
 
 async function debugVue(tag, serverPort) {
-    const wpsjsConfig = jsUtil.wpsjsConfig()
+    const wpsjsConfig = await jsUtil.wpsjsConfig()
     if(wpsjsConfig.script){
         jsUtil.SpawnNpm(wpsjsConfig.script)
         return true
@@ -156,8 +156,8 @@ async function debugVue(tag, serverPort) {
 	return false
 }
 
-function debugReact(tag, serverPort) {
-    const wpsjsConfig = jsUtil.wpsjsConfig()
+async function debugReact(tag, serverPort) {
+    const wpsjsConfig = await jsUtil.wpsjsConfig()
     if(wpsjsConfig.script){
         jsUtil.SpawnNpm(wpsjsConfig.script)
         return true

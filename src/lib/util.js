@@ -5,6 +5,7 @@ const path = require('path')
 const fsEx = require('fs-extra')
 const fswin = require('fswin')
 var cp = require('child_process');
+const unconfig = require('unconfig');
 
 const app = express()
 let netPort = 3889
@@ -51,9 +52,8 @@ function GetNpmCmd() {
 		return "npm.cmd"
 	return "npm"
 }
-
-function SpawnNpm(tag) {
-	const config = wpsjsConfig()
+async function SpawnNpm(tag) {
+	const config = await wpsjsConfig()
 	if (!config.packageManager) {
 		config.packageManager = 'npm'
 	}
@@ -164,12 +164,13 @@ async function GetVitePort() {
 	return port
 }
 
-function wpsjsConfig() {
-	const configPath = path.resolve(process.cwd(), 'wpsjs.config.js')
-	if (fsEx.existsSync(configPath)) {
-		return require(configPath)
-	}
-	return {}
+async function wpsjsConfig() {
+	const { config } = await unconfig.loadConfig({
+		sources: {
+			files: 'wpsjs.config',
+		}
+	})
+	return config || {}
 }
 
 module.exports = {
