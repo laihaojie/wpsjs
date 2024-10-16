@@ -14,25 +14,30 @@ const chalk = require('chalk')
 
 
 async function debug(options) {
-	if(!options.port){
+	if (!options.port) {
 		const vitePort = await jsUtil.GetVitePort()
-		if(vitePort){
+		if (vitePort) {
 			options.port = vitePort
+		}
+		const wpsjsConfig = jsUtil.wpsjsConfig()
+		if (wpsjsConfig.port) {
+			options.port = wpsjsConfig.port
 		}
 	}
 
 	const xmlDebug = require('./debug_xmlplugin')
 	const publishDebug = require('./debug_publish')
 	needPublishDebug().then(b=>{
-		return b ? publishDebug.debug(options) : xmlDebug(options)
+		// return b ? publishDebug.debug(options) : xmlDebug(options)
+		return publishDebug.debug(options)
 	})
 }
 
-async function needPublishDebug(){
+async function needPublishDebug() {
 	var bPersonal = false;
 	var versionCfgpath;
 	if (os.platform() == 'win32') {
-		return new Promise((r,j)=>{
+		return new Promise((r, j) => {
 			cp.exec("REG QUERY HKEY_CLASSES_ROOT\\KWPS.Document.12\\shell\\open\\command /ve", function (error, stdout, stderr) {
 				var val = undefined;
 				try {
@@ -53,7 +58,7 @@ async function needPublishDebug(){
 				let versionCfgpath = val.substring(0, pos) + "cfgs/setup.cfg";
 				r(versionCfgpath)
 			});
-		}).then(r=>{
+		}).then(r => {
 			versionCfgpath = r
 			if (!fsEx.existsSync(versionCfgpath))
 				return false;
@@ -72,7 +77,7 @@ async function needPublishDebug(){
 			const bVue3 = scriptDev.includes("vite")
 			return bVue3;
 		})
-	} 
+	}
 
 	return true;
 }

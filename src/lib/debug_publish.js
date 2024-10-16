@@ -137,12 +137,17 @@ function startNormalServer(serverPort){
 }
 
 async function debugVue(tag, serverPort) {
+    const wpsjsConfig = jsUtil.wpsjsConfig()
+    if(wpsjsConfig.script){
+        jsUtil.SpawnNpm(wpsjsConfig.script)
+        return true
+    }
 	if (projectCfg.scripts && typeof projectCfg.scripts[tag] == 'string') {
 		let devCmd = projectCfg.scripts[tag].trim()
 		if (devCmd.startsWith("vite")) {
 			projectCfg.scripts[tag] = `vite --port ${serverPort}`
 			cfgData = JSON.stringify(projectCfg, "", "\t")
-			fsEx.writeFileSync('package.json', cfgData)
+			// fsEx.writeFileSync('package.json', cfgData)
 
             jsUtil.SpawnNpm(tag)
 			return true
@@ -152,6 +157,11 @@ async function debugVue(tag, serverPort) {
 }
 
 function debugReact(tag, serverPort) {
+    const wpsjsConfig = jsUtil.wpsjsConfig()
+    if(wpsjsConfig.script){
+        jsUtil.SpawnNpm(wpsjsConfig.script)
+        return true
+    }
 	if (projectCfg.scripts && typeof projectCfg.scripts[tag] == 'string') {
 		let devCmd = projectCfg.scripts[tag].trim()
 		if (devCmd.includes("react-scripts")) {
@@ -160,7 +170,7 @@ function debugReact(tag, serverPort) {
 			else
 				projectCfg.scripts[tag] = `export PORT=${serverPort} react-scripts start`
 			cfgData = JSON.stringify(projectCfg, "", "\t")
-			fsEx.writeFileSync('package.json', cfgData)
+			// fsEx.writeFileSync('package.json', cfgData)
 
 			jsUtil.SpawnNpm(tag)
 			return true
@@ -248,6 +258,7 @@ function startWps(){
     }
     GetExePath((cmd, args) => {
 		//cmd = "f:\\work\\one\\debug\\WPSOffice\\office6\\wps.exe /prometheus /wps /t"
+        console.log(chalk.green(`启动WPS：${cmd} ${args.join("  -  ")}`))
 		if (remoteDebuggingPort != -1) {
 			cmd += " " + `/JsApiremotedebuggingPort=${remoteDebuggingPort}`
 			let userDataDir = path.join(os.tmpdir(), `wpsjs-userdatadir_${remoteDebuggingPort}`)

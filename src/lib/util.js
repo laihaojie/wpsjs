@@ -53,10 +53,14 @@ function GetNpmCmd() {
 }
 
 function SpawnNpm(tag) {
+	const config = wpsjsConfig()
+	if (!config.packageManager) {
+		config.packageManager = 'npm'
+	}
 	if (os.platform == 'win32') {
-		return cp.spawn('cmd', ['/c', 'npm', 'run', tag], { stdio: 'inherit' })
+		return cp.spawn('cmd', ['/c', config.packageManager, 'run', tag], { stdio: 'inherit' })
 	} else {
-		return cp.spawn('npm', ['run', tag], { stdio: 'inherit' })
+		return cp.spawn(config.packageManager, ['run', tag], { stdio: 'inherit' })
 	}
 }
 
@@ -137,7 +141,7 @@ async function GetDemoServerPort(cb) {
 }
 
 async function GetVitePort() {
-	const viteFileNames = ['vite.config.js', 'vite.config.ts', 'vite.config.mjs', 'vite.config.cjs','vite.config.mts', 'vite.config.cts']
+	const viteFileNames = ['vite.config.js', 'vite.config.ts', 'vite.config.mjs', 'vite.config.cjs', 'vite.config.mts', 'vite.config.cts']
 	const viteConfigPaths = viteFileNames.map(fileName => path.resolve(process.cwd(), fileName))
 	const viteConfigPath = viteConfigPaths.find(fsEx.existsSync)
 	if (!viteConfigPath) {
@@ -160,7 +164,16 @@ async function GetVitePort() {
 	return port
 }
 
+function wpsjsConfig() {
+	const configPath = path.resolve(process.cwd(), 'wpsjs.config.js')
+	if (fsEx.existsSync(configPath)) {
+		return require(configPath)
+	}
+	return {}
+}
+
 module.exports = {
+	wpsjsConfig,
 	GetVitePort,
 	GetWebSiteHost,
 	getNow,

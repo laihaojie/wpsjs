@@ -23,6 +23,10 @@
     "wpsjs": "./src/index.js"
   },
   "license": "ISC",
+  "files": [
+    "src",
+    "packages"
+  ],
   "devDependencies": {
     "wps-jsapi": "latest"
   },
