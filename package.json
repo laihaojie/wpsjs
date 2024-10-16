@@ -1,6 +1,6 @@
 {
   "name": "@djie/wpsjs",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "用于开发wps加载项的工具包",
   "main": "./src/index.js",
   "scripts": {
