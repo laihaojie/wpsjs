@@ -20,7 +20,7 @@ let bSuRoot = false
 
 var serverHost
 var serverPort
-function debug(...arg){
+function debug(arg){
     GetWebSiteInfo(arg).then(arg => {
         serverHost = arg[0]
         serverPort = arg[1]

@@ -13,11 +13,18 @@ const inquirer = require('inquirer')
 const chalk = require('chalk')
 
 
-async function debug(...options) {
+async function debug(options) {
+	if(!options.port){
+		const vitePort = await jsUtil.GetVitePort()
+		if(vitePort){
+			options.port = vitePort
+		}
+	}
+
 	const xmlDebug = require('./debug_xmlplugin')
 	const publishDebug = require('./debug_publish')
 	needPublishDebug().then(b=>{
-		return b ? publishDebug.debug(...options) : xmlDebug(...options)
+		return b ? publishDebug.debug(options) : xmlDebug(options)
 	})
 }
 

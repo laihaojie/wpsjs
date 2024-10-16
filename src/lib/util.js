@@ -14,7 +14,7 @@ let demoServerPort = 3999
 let bdemoServerInited = false
 
 //read config
-function projectCfg () {
+function projectCfg() {
 	const cwd = process.cwd()
 	const cfgPath = path.resolve(cwd, 'package.json')
 	var cfgData = fsEx.readFileSync(cfgPath)
@@ -34,7 +34,7 @@ function getNow() {
 }
 
 async function GetWebSiteHost(port, cb) {
-	cb = cb || function() {}
+	cb = cb || function () { }
 	if (bInited) {
 		cb(`http://127.0.0.1:${netPort}`, netPort)
 	} else {
@@ -52,11 +52,11 @@ function GetNpmCmd() {
 	return "npm"
 }
 
-function SpawnNpm(tag){
-	if (os.platform == 'win32'){
-		return cp.spawn('cmd',['/c','npm','run', tag], { stdio: 'inherit'})
-	}else{
-		return cp.spawn('npm', ['run', tag], {stdio: 'inherit'})
+function SpawnNpm(tag) {
+	if (os.platform == 'win32') {
+		return cp.spawn('cmd', ['/c', 'npm', 'run', tag], { stdio: 'inherit' })
+	} else {
+		return cp.spawn('npm', ['run', tag], { stdio: 'inherit' })
 	}
 }
 
@@ -125,7 +125,7 @@ function GetPublishDir() {
 }
 
 async function GetDemoServerPort(cb) {
-	cb = cb || function() {}
+	cb = cb || function () { }
 	if (bdemoServerInited) {
 		cb(demoServerPort)
 	} else {
@@ -136,8 +136,33 @@ async function GetDemoServerPort(cb) {
 	}
 }
 
+async function GetVitePort() {
+	const viteFileNames = ['vite.config.js', 'vite.config.ts', 'vite.config.mjs', 'vite.config.cjs','vite.config.mts', 'vite.config.cts']
+	const viteConfigPaths = viteFileNames.map(fileName => path.resolve(process.cwd(), fileName))
+	const viteConfigPath = viteConfigPaths.find(fsEx.existsSync)
+	if (!viteConfigPath) {
+		return undefined
+	}
+
+	const viteConfigStr = fsEx.readFileSync(viteConfigPath, 'utf-8')
+
+	// regex to find the port in the vite config
+	const portRegex = /port:\s*(\d+)/
+	const portMatch = viteConfigStr.match(portRegex)
+	if (!portMatch) {
+		return undefined
+	}
+
+	const port = parseInt(portMatch[1])
+	if (isNaN(port)) {
+		return undefined
+	}
+	return port
+}
+
 module.exports = {
-    GetWebSiteHost,
+	GetVitePort,
+	GetWebSiteHost,
 	getNow,
 	GetNpmCmd,
 	SpawnNpm,
