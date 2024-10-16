@@ -45,5 +45,9 @@
     "sudo-js": "^1.0.2",
     "wpsjs-rpc-sdk-new": "latest",
     "xml2js": "^0.6.2"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }
